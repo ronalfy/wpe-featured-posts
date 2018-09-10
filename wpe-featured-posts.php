@@ -17,6 +17,22 @@ class WPE_Featured_Posts {
 	public function __construct() {
 		add_action( 'post_submitbox_misc_actions', array( $this, 'post_submitbox_misc_actions' ) );
 		add_action( 'admin_head', array( $this, 'output_styles' ) );
+		add_action( 'save_post', array( $this, 'maybe_save_wpe_featured' ) );
+	}
+
+	public function maybe_save_wpe_featured( $post_id ) {
+		if ( 'post' !== get_post_type() ) return;
+		if ( wp_is_post_revision( $post_id ) ) return;
+
+		if( isset( $_POST['wpe-featured-post'] ) ) {
+			$value = $_POST['wpe-featured-post'];
+			if ( '0' === $value ) {
+				delete_post_meta( $post_id, '_wpe_featured_post' );
+			} else {
+				update_post_meta( $post_id, '_wpe_featured_post', true );
+			}
+		}
+
 	}
 
 	public function output_styles() {
@@ -45,7 +61,8 @@ class WPE_Featured_Posts {
 		$post_meta = get_post_meta( $post->ID, '_wpe_featured_post', true );
 		echo '<div class="misc-pub-section wpe-featured-post">';
 		echo '<span id="wpe-featured-post">';
-		printf( '<input id="wpe-featured-post-checkbox" name="wpe-featured-ppst" type="checkbox" value="%s" %s />', esc_attr( $post->ID ), checked( true, $post_meta, false ) );
+		echo '<input name="wpe-featured-post" type="hidden" value="0" />';
+		printf( '<input id="wpe-featured-post-checkbox" name="wpe-featured-post" type="checkbox" value="%s" %s />', esc_attr( $post->ID ), checked( true, $post_meta, false ) );
 		printf( '<label for="wpe-featured-post-checkbox" class="selectit">%s</label>', esc_html__( 'Feature on WPEngine', 'wpe-featured-posts' ) );
 		echo '</span>';
 		echo '</div>';
