@@ -20,26 +20,28 @@ class WPE_Featured_Posts {
 	}
 
 	public function output_styles() {
+		if ( 'post' !== get_post_type() ) return;
 		?>
 		<style>
-			#wpe-featured-post:before {
-				content: "\f237";
-				color: #82878c;
-				position: relative;
-   				top: -1px;
-				font: 400 20px/1 dashicons;
-				speak: none;
-				display: inline-block;
-				margin-left: -1px;
-				padding-right: 3px;
-				vertical-align: top;
-				-webkit-font-smoothing: antialiased;
-			}
+		#wpe-featured-post:before {
+			content: "\f237";
+			color: #82878c;
+			position: relative;
+			top: -1px;
+			font: 400 20px/1 dashicons;
+			speak: none;
+			display: inline-block;
+			margin-left: -1px;
+			padding-right: 3px;
+			vertical-align: top;
+			-webkit-font-smoothing: antialiased;
+		}
 		</style>
 		<?php
 	}
 	public function post_submitbox_misc_actions() {
 		global $post;
+		if( 'post' !== get_post_type() ) return;
 		$post_meta = get_post_meta( $post->ID, '_wpe_featured_post', true );
 		echo '<div class="misc-pub-section wpe-featured-post">';
 		echo '<span id="wpe-featured-post">';
