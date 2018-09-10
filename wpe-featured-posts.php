@@ -61,6 +61,10 @@ class WPE_Featured_Posts {
 			'meta_value'     => 'true'
 		);
 		$query_results = get_posts( $posts_args );
+		foreach( $query_results as &$post ) {
+			$post->permalink = get_permalink( $post->ID );
+			$post->featured_image = get_the_post_thumbnail_url( $post );
+		}
 		wp_send_json( $query_results );
 	}
 
